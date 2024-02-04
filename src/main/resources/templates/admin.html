@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Spring Security Example</title>
+    <style>
+        * {
+            font-family: "Arial", sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        td, th {
+            padding: 5px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Welcome, admin!</h2>
+
+<table>
+    <thead>
+    <tr th:if="${!users.isEmpty()}">
+        <th>Id</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Email</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td><a th:text="${user.getId()}"></a></td>
+        <td><a th:text="${user.getUsername()}"></a></td>
+        <td><a th:text="${user.getPassword()}"></a></td>
+        <td><a th:text="${user.getEmail()}"></a></td>
+        <td><a th:href="@{/admin/edit/(id=${user.getId()})}">Edit</a></td>
+        <td><a th:href="@{/delete/(id=${user.getId()})}">Delete</a></td>
+    </tbody>
+</table>
+
+<br/>
+
+<a href="/admin/new">Create new user</a>
+
+<br/>
+<hr/>
+
+<div sec:authorize="isAuthenticated()">
+    <a th:href="@{/logout}">Logout</a>
+</div>
+
+</body>
+</html>
