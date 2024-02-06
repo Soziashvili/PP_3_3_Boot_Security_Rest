@@ -59,7 +59,7 @@ public class UserController {
             return "admin/new";
         }
 
-        userService.addUser(user);
+        userService.save(user);
         return "redirect:/admin";
     }
 
