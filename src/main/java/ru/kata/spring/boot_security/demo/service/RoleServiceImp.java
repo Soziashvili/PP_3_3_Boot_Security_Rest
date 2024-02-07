@@ -28,6 +28,7 @@ public class RoleServiceImp implements RoleService {
 
     public Role findRoleById(Long id) {
         Optional<Role> role = roleRepository.findById(id);
+
         return role.orElse(new Role());
     }
 

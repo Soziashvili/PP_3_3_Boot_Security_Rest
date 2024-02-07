@@ -35,6 +35,7 @@ public class UserServiceImp implements UserService{
     @Transactional(readOnly = true)
     public User findUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
+
         return user.orElse(new User());
     }
 
@@ -48,12 +49,10 @@ public class UserServiceImp implements UserService{
     @Transactional
     public void updateUser(Long id, User user) {
         Optional<User> opt = userRepository.findById(id);
-        User updatedUser = opt.orElse(new User());
-        updatedUser.setUsername(user.getUsername());
-        updatedUser.setPassword(user.getPassword());
-        updatedUser.setEmail(user.getEmail());
-        updatedUser.setRoles(user.getRoles());
-        userRepository.save(updatedUser);
+
+        if (opt.isPresent()) {
+            userRepository.save(user);
+        }
     }
 
     @Transactional

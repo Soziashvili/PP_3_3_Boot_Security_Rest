@@ -51,5 +51,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationProvider.setUserDetailsService(userDetailsService);
         return authenticationProvider;
     }
-
 }

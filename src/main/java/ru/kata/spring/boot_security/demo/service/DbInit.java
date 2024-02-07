@@ -36,7 +36,7 @@ public class DbInit {
         roles.add(role2);
         roles1.add(role2);
 
-        User admin = new User("admin", new BCryptPasswordEncoder().encode("admin"), "admin228@mail.ru", roles);
+        User admin = new User("admin", new BCryptPasswordEncoder().encode("admin"), "admin@mail.ru", roles);
         User user = new User("user", new BCryptPasswordEncoder().encode("user"), "user@mail.ru", roles1);
 
         admin.setId(1L);

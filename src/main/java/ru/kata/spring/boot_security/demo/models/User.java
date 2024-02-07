@@ -18,6 +18,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -44,12 +45,12 @@ public class User implements UserDetails {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private Collection<Role> roles;
+    private Set<Role> roles;
 
     public User() {
     }
 
-    public User(String username, String password, String email, Collection<Role> roles) {
+    public User(String username, String password, String email, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -93,11 +94,11 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public Collection<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Collection<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
