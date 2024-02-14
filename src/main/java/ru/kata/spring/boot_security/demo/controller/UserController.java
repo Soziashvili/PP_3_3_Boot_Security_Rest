@@ -30,12 +30,15 @@ public class UserController {
 
     @GetMapping
     public String mainPage() {
-        return "index";
+        return "/login";
     }
 
     @GetMapping("/admin")
-    public String getMain(Model model) {
+    public String getMain(Principal principal, Model model) {
         model.addAttribute("users", userService.listUsers());
+        model.addAttribute("currentUser", userService.findByUsername(principal.getName()));
+        model.addAttribute("user", new User());
+        model.addAttribute("roles", roleService.listRoles());
         return "admin";
     }
 

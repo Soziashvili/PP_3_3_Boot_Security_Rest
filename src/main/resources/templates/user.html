@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>User</title>
     <style>
@@ -13,10 +15,10 @@
 </head>
 <body>
 
-<div>The user with id <span th:text="${user.getId()}">id</span></div>
+<div>User with ID: <span th:text="${user.getId()}">id</span></div>
 <div>Username: <span th:text="${user.getUsername()}">name</span></div>
 <div>Email: <span th:text="${user.getEmail()}">email</span></div>
-<div>Role: <span th:text="${user.getRoles().toString()}">roles</span></div>
+<div>Role: <span th:text="${user.getRoles()}">roles</span></div>
 
 <hr/>
 
