@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <title>Admin main</title>
+</head>
+<body>
+
+<div th:fragment="this_user">
+
+        <div class="mx-5">
+            <h1 class="my-3">User information-page</h1>
+            <div class="border">
+                <h4 class="ml-4 my-2">About user</h4>
+                <div class="container bg-white border-top m-0 p-4">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">First name</th>
+                            <th scope="col">Last name</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Role</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a th:text="${this_user.getId()}"></a></td>
+                            <td><a th:text="${this_user.getFirstname()}"></a></td>
+                            <td><a th:text="${this_user.getLastname()}"></a></td>
+                            <td><a th:text="${this_user.getAge()}"></a></td>
+                            <td><a th:text="${this_user.getUsername()}"></a></td>
+                            <td><a th:text="${#strings.listJoin(this_user.getRoles(), ' ')}"></a></td>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+</body>
+</html>

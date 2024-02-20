@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <title>Admin main</title>
+</head>
+<body>
+
+<div th:fragment="new_user">
+    <div class="container bg-white border-top">
+        <form th:method="POST" th:action="@{/admin}" th:object="${new_user}">
+            <div class="row mt-3">
+                <div class="form-group text-center col-md-4 mx-auto">
+                    <label for="firstname"><strong>First name</strong></label>
+                    <input type="text" class="form-control" th:field="*{firstname}" id="firstname" placeholder="First name"/>
+                    <div class="error" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}">Error</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group text-center col-md-4 mx-auto">
+                    <label for="name"><strong>Last name</strong></label>
+                    <input type="text" class="form-control" th:field="*{lastname}" id="name" placeholder="Last name"/>
+                    <div class="error" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}">Error</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group text-center col-md-4 mx-auto">
+                    <label for="age"><strong>Age</strong></label>
+                    <input type="text" class="form-control" th:field="*{age}" id="age" placeholder="Age"/>
+                    <div class="error" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Error</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group text-center col-md-4 mx-auto">
+                    <label for="username"><strong>Email</strong></label>
+                    <input type="text" class="form-control" th:field="*{username}" id="username" placeholder="Email"/>
+                    <div class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group text-center col-md-4 mx-auto">
+                    <label for="pwd"><strong>Password</strong></label>
+                    <input type="password" class="form-control" th:field="*{password}" id="pwd" placeholder="Password"/>
+                    <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group text-center col-md-4 mx-auto">
+                    <label for="roles"><strong>Roles</strong></label>
+                    <select multiple class="form-control" th:field="*{roles}" id="roles">
+                        <option th:each="role : ${roles}" th:text="${role.getRole().substring(5)}" th:value="${role.getId()}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group text-center col-md-4 mx-auto">
+                    <button type="submit" class="btn btn-success translate-middle">Add new user</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

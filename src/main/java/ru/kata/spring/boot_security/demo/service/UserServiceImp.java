@@ -22,9 +22,10 @@ public class UserServiceImp implements UserService{
     }
 
     @Transactional
-    public void save(User user) {
+    public User save(User user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);
+        return user;
     }
 
     @Transactional(readOnly = true)
@@ -56,8 +57,8 @@ public class UserServiceImp implements UserService{
     }
 
     @Transactional
-    public User findByUsername(String name) {
-        Optional<User> user = userRepository.findByUsername(name);
+    public User findByUsername(String email) {
+        Optional<User> user = userRepository.findByUsername(email);
 
         return user.orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

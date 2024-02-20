@@ -9,25 +9,20 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
-    <title>User page</title>
+    <title>Admin main</title>
 </head>
 <body>
 
-<div th:replace="fragments/header :: header"></div>
-
-<div class="container-fluid p-0" >
-    <div class="row">
-        <div class="col-2 p-0 vh-100">
-            <div>
-                <ul class="nav flex-column nav-pills nav-stacked mt-3">
-                    <li class="nav-item pl-3"><a class="nav-link active" data-toggle="tab" href="#user">User</a></li>
-                </ul>
+<div th:fragment="header">
+    <nav class="navbar bg-dark">
+        <div class="container-fluid">
+            <div class="navbar-brand text-light mb-2 h2">
+                <span th:text="${this_user.getUsername()}">id</span> with roles:
+                <span th:text="${#strings.listJoin(this_user.getRoles(), ' ')}"></span>
             </div>
+            <a class="nav-link d-flex text-white-50 mr-3" href="/logout">Logout</a>
         </div>
-        <div class="col-10 p-0 m-0 vh-100 bg-light">
-            <div th:replace="fragments/this_user :: this_user"></div>
-        </div>
-    </div>
+    </nav>
 </div>
 
 </body>
