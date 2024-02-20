@@ -7,10 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -51,13 +48,6 @@ public class UserController {
         return "user";
     }
 
-    @GetMapping("admin/new")
-    public String showNewUserForm(Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("roles", roleService.listRoles());
-        return "admin/new";
-    }
-
     @PostMapping("/admin")
     public String createUser(@ModelAttribute("user") @Valid User user,
                              BindingResult bindingResult) {
@@ -66,20 +56,6 @@ public class UserController {
         }
 
         userService.save(user);
-        return "redirect:/admin";
-    }
-
-    @GetMapping("/edit")
-    @ResponseBody
-    public User update(Long id) {
-
-        return userService.findUserById(id);
-    }
-
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(User user, @RequestParam("id") Long id) {
-        userService.updateUser(id, user);
-
         return "redirect:/admin";
     }
 
@@ -97,32 +73,9 @@ public class UserController {
 
     @PostMapping("admin/update/")
     public String editUser(@ModelAttribute("new_user") User user) {
-//        model.addAttribute("id", userService.findUserById(id).getId());
-//        model.addAttribute("username", userService.findUserById(id).getUsername());
-//        model.addAttribute("email", userService.findUserById(id).getEmail());
-//        model.addAttribute("password", userService.findUserById(id).getPassword());
-//        model.addAttribute("roles", userService.findUserById(id).getAuthorities());
-
         userService.save(user);
         return "redirect:/admin";
     }
-
-//    @PostMapping("admin/update")
-//    public String editUser(@ModelAttribute("user") @Valid User user,
-//                           BindingResult bindingResult,
-//                           @RequestParam("id") Long id) {
-//        if (bindingResult.hasErrors()) {
-//            System.out.println(user);
-//            System.out.println(id);
-//            System.out.println(bindingResult);
-//            return "admin/update";
-//        }
-//
-//        System.out.println("update user" + user);
-//
-//        userService.updateUser(id, user);
-//        return "redirect:/admin";
-//    }
 
     @PostMapping("/delete/")
     public String deleteUser(@RequestParam("id") Long id) {
