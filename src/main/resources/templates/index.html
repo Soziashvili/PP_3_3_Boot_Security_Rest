@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+
+    <title>Admin panel</title>
+
+</head>
+<body>
+
+<!--<div th:replace="fragments/header :: header"></div>-->
+
+<div class="container-fluid p-0" >
+    <div class="row">
+<!--        <div class="col-2 p-0 vh-100">-->
+<!--            <div th:replace="fragments/nav :: nav"></div>-->
+<!--        </div>-->
+        <div class="tab-content col-10 p-0 m-0 vh-100 bg-light">
+            <div class="tab-pane active mx-5" id="admin">
+                <h1 class="my-3">Admin panel</h1>
+                <ul id="tabs" class="nav nav-tabs">
+                    <li class="nav-item"><a id="users_nav" class="nav-link active" data-toggle="tab" href="#users_tab">Users table</a></li>
+                    <li class="nav-item"><a id="new_user_nav" class="nav-link" data-toggle="tab" href="#new_user_tab">New User</a></li>
+                </ul>
+                <div class="tab-content border">
+                    <div id="users_tab" class="tab-pane active">
+                        <h4 class="ml-4 my-2">All users</h4>
+                        <div th:replace="fragments/all_users :: all_users"></div>
+                    </div>
+                    <div id="new_user_tab" class="tab-pane">
+                        <h4 class="ml-4 my-2">Add new user</h4>
+                        <div th:replace="fragments/new_user :: new_user"></div>
+                    </div>
+                </div>
+            </div>
+<!--            <div class="tab-pane" id="user">-->
+<!--                <div class="col-10 p-0 m-0 vh-100 bg-light">-->
+<!--                    <div th:replace="fragments/this_user :: this_user"></div>-->
+<!--                </div>-->
+<!--            </div>-->
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/edit :: edit"></div>
+
+<div th:replace="fragments/delete :: delete"></div>
+
+
+
+
+
+<!--<div>-->
+<!--    <nav class="navbar bg-dark">-->
+<!--        <div class="container-fluid">-->
+<!--            <div class="navbar-brand text-light mb-2 h2" id="header">-->
+
+<!--            </div>-->
+<!--            <a class="nav-link d-flex text-white-50 mr-3" href="/logout">Logout</a>-->
+<!--        </div>-->
+<!--    </nav>-->
+<!--</div>-->
+
+<!--<div class="container bg-white border-top m-0 p-4">-->
+<!--    <table class="table table-striped">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th scope="col">ID</th>-->
+<!--            <th scope="col">First name</th>-->
+<!--            <th scope="col">Last name</th>-->
+<!--            <th scope="col">Age</th>-->
+<!--            <th scope="col">Email</th>-->
+<!--            <th scope="col">Role</th>-->
+<!--            <th scope="col">Edit</th>-->
+<!--            <th scope="col">Delete</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody id="table-body">-->
+
+<!--        </tbody>-->
+<!--    </table>-->
+<!--</div>-->
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function() {
+       showUserTable();
+
+       $("#newUserForm").submit(function(event) {
+           event.preventDefault();
+
+           let roles = $("#roles").serializeArray();
+           let roles1 = [];
+           roles.forEach(el => el.value === "USER" ?
+               roles1.push({id: 2, role: "USER"}) :
+               roles1.push({id: 1, role: "ADMIN"}));
+
+           createUser($("#firstname").val(),
+                      $("#lastname").val(),
+                      $("#age").val(),
+                      $("#username").val(),
+                      $("#pwd").val(),
+                      roles1);
+
+           $("#firstname").val("");
+           $("#lastname").val("");
+           $("#age").val("");
+           $("#username").val("");
+           $("#pwd").val("");
+           $("#roles").children("option:selected").prop("selected", false);
+
+       });
+
+       $("#editUserModal").on("show.bs.modal", function(event) {
+           let button = $(event.relatedTarget);
+           let userId = button.data("userid");
+           let modal = $("#editUserModal");
+
+           showEditUserDialog(userId, modal);
+       });
+
+       $("#deleteUserModal").on("show.bs.modal", function (event) {
+           let button = $(event.relatedTarget);
+           let userId = button.data("userid");
+           let modal = $("#deleteUserModal");
+
+           showDeleteUserDialog(userId, modal);
+       });
+
+
+
+    });
+
+    function showUserTable() {
+        $.ajax({
+            url: "http://localhost:8080/api/v1/users/",
+            type: "GET",
+            dataType: "json",
+            success: function (users) {
+                let userList = $("#table-body");
+                userList.empty();
+                users.forEach(function(user) {
+                    let row = `
+                        <tr>
+                          <td><a>${user.id}</a></td>
+                          <td><a>${user.firstname}</a></td>
+                          <td><a>${user.lastname}</a></td>
+                          <td><a>${user.age}</a></td>
+                          <td><a>${user.username}</a></td>
+                          <td><a>${user.roles.map(r => r.role.substring(5)).join(" ")}</a></td>
+                          <td><a role="button" class="btn btn-info text-light" data-toggle="modal" data-target="#editUserModal" data-userid="${user.id}">Edit</a></td>
+                          <td><a role="button" class="btn btn-danger text-light" data-toggle="modal" data-target="#deleteUserModal" data-userid="${user.id}">Delete</a></td>
+                      </tr>
+                    `;
+                    userList.append(row);
+                });
+            },
+            error: function() {
+                console.log("Error occurred while retrieving users.");
+            }
+        });
+    }
+
+    function createUser(firstname, lastname, age, username, password, roles) {
+
+        let user = {
+                firstname: firstname,
+                lastname: lastname,
+                age: age,
+                username: username,
+                password: password,
+                roles: roles
+            };
+
+        console.log(user);
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/users/",
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(user),
+            success: function() {
+                showUserTable();
+                $("#new_user_nav").removeClass("active");
+                $("#users_nav").addClass("active");
+                $("#new_user_tab").removeClass("active");
+                $("#users_tab").addClass("active");
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                console.log("Creating user error: " + errorThrown);
+            }
+        });
+    }
+
+    $("#editUserButton").click(function () {
+        let modal = $("#editUserModal");
+        let roles = modal.find("#roles").serializeArray();
+        let roles1 = [];
+        roles.forEach(el => el.value === "USER" ?
+            roles1.push({id: 2, role: "USER"}) :
+            roles1.push({id: 1, role: "ADMIN"}));
+        let user = {
+            id: modal.find("#userId").val(),
+            firstname: modal.find("#firstName").val(),
+            lastname: modal.find("#lastName").val(),
+            age: modal.find("#userAge").val(),
+            username: modal.find("#userName").val(),
+            password: modal.find("#userPassword").val(),
+            roles: roles1
+        }
+        console.log(user);
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/users/",
+            type: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(user),
+            success: function() {
+                showUserTable();
+                location.reload();
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                console.log("Creating user error: " + errorThrown);
+            }
+        });
+    });
+
+    $("#deleteUserButton").click(function () {
+        $.ajax({
+            url: "http://localhost:8080/api/v1/users/" + $("#deleteUserModal").find("#userId").val(),
+            type: "DELETE",
+            success: function() {
+                showUserTable();
+                location.reload();
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                console.log("Delete user error: " + errorThrown);
+            }
+        });
+    });
+
+    function showEditUserDialog(id, modal) {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "http://localhost:8080/api/v1/users/" + id,
+            success: function (data) {
+                modal.find("#userId").val(data.id);
+                modal.find("#firstName").val(data.firstname);
+                modal.find("#lastName").val(data.lastname);
+                modal.find("#userAge").val(data.age);
+                modal.find("#userName").val(data.username);
+                modal.find("#userPassword").val(data.password);
+
+            },
+            error: (err) => console.log(err)
+        });
+    }
+
+    function showDeleteUserDialog(id, modal) {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "http://localhost:8080/api/v1/users/" + id,
+            success: function(data) {
+                modal.find("#userId").val(data.id);
+                modal.find("#firstName").val(data.firstname);
+                modal.find("#lastName").val(data.lastname);
+                modal.find("#userAge").val(data.age);
+                modal.find("#userName").val(data.username);
+                modal.find("#userPassword").val(data.password);
+            },
+            error: (err) => console.log(err)
+        });
+    }
+
+</script>
+
+</body>
+</html>

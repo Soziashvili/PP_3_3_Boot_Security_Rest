@@ -22,7 +22,7 @@ public class UserServiceImp implements UserService{
     }
 
     @Transactional
-    public User save(User user) {
+    public User create(User user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);
         return user;

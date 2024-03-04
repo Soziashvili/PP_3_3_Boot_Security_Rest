@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,12 +11,11 @@
     <title>Admin main</title>
 </head>
 <body>
-
 <div th:fragment="all_users">
     <div class="container bg-white border-top m-0 p-4">
         <table class="table table-striped">
             <thead>
-            <tr th:if="${!users.isEmpty()}">
+            <tr>
                 <th scope="col">ID</th>
                 <th scope="col">First name</th>
                 <th scope="col">Last name</th>
@@ -29,26 +26,12 @@
                 <th scope="col">Delete</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:each="user, itemStat : ${users}">
-                <td><a th:text="${user.getId()}"></a></td>
-                <td><a th:text="${user.getFirstname()}"></a></td>
-                <td><a th:text="${user.getLastname()}"></a></td>
-                <td><a th:text="${user.getAge()}"></a></td>
-                <td><a th:text="${user.getUsername()}"></a></td>
-                <td><a th:text="${#strings.listJoin(user.getRoles(), ' ')}"></a></td>
-                <td><a role="button" class="btn btn-info text-light" data-toggle="modal" th:data-target="${'#edit'+ user.getId()}">Edit</a></td>
-                <td><a role="button" class="btn btn-danger text-light" data-toggle="modal" th:data-target="${'#delete'+ user.getId()}">Delete</a></td>
-                <td class="p-0">
-                    <div th:replace="fragments/edit :: edit"></div>
-                </td>
-                <td class="p-0">
-                    <div th:replace="fragments/delete :: delete"></div>
-                </td>
-            </tbody>
+            <tbody id="table-body"></tbody>
         </table>
     </div>
 </div>
+
+
 
 </body>
 </html>
