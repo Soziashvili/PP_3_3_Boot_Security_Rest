@@ -15,13 +15,18 @@
 </head>
 <body>
 
-<!--<div th:replace="fragments/header :: header"></div>-->
+<div th:replace="fragments/header :: header"></div>
 
 <div class="container-fluid p-0" >
     <div class="row">
-<!--        <div class="col-2 p-0 vh-100">-->
-<!--            <div th:replace="fragments/nav :: nav"></div>-->
-<!--        </div>-->
+        <div class="col-2 p-0 vh-100">
+            <div>
+                <ul class="nav flex-column nav-pills nav-stacked mt-3">
+                    <li class="nav-item pl-3"><a class="nav-link active in" data-toggle="tab" aria-current="page" href="#admin" id="admin-nav">Admin</a></li>
+                    <li class="nav-item pl-3"><a class="nav-link" data-toggle="tab" href="#principal" id="user-nav">User</a></li>
+                </ul>
+            </div>
+        </div>
         <div class="tab-content col-10 p-0 m-0 vh-100 bg-light">
             <div class="tab-pane active mx-5" id="admin">
                 <h1 class="my-3">Admin panel</h1>
@@ -40,11 +45,11 @@
                     </div>
                 </div>
             </div>
-<!--            <div class="tab-pane" id="user">-->
-<!--                <div class="col-10 p-0 m-0 vh-100 bg-light">-->
-<!--                    <div th:replace="fragments/this_user :: this_user"></div>-->
-<!--                </div>-->
-<!--            </div>-->
+            <div class="tab-pane" id="principal">
+                <div class="col-10 p-0 m-0 vh-100 bg-light">
+                    <div th:replace="fragments/principal :: principal"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -52,41 +57,6 @@
 <div th:replace="fragments/edit :: edit"></div>
 
 <div th:replace="fragments/delete :: delete"></div>
-
-
-
-
-
-<!--<div>-->
-<!--    <nav class="navbar bg-dark">-->
-<!--        <div class="container-fluid">-->
-<!--            <div class="navbar-brand text-light mb-2 h2" id="header">-->
-
-<!--            </div>-->
-<!--            <a class="nav-link d-flex text-white-50 mr-3" href="/logout">Logout</a>-->
-<!--        </div>-->
-<!--    </nav>-->
-<!--</div>-->
-
-<!--<div class="container bg-white border-top m-0 p-4">-->
-<!--    <table class="table table-striped">-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th scope="col">ID</th>-->
-<!--            <th scope="col">First name</th>-->
-<!--            <th scope="col">Last name</th>-->
-<!--            <th scope="col">Age</th>-->
-<!--            <th scope="col">Email</th>-->
-<!--            <th scope="col">Role</th>-->
-<!--            <th scope="col">Edit</th>-->
-<!--            <th scope="col">Delete</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody id="table-body">-->
-
-<!--        </tbody>-->
-<!--    </table>-->
-<!--</div>-->
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"
@@ -100,23 +70,25 @@
 
 <script>
     $(document).ready(function() {
+       showHeader();
+       showUser();
        showUserTable();
 
        $("#newUserForm").submit(function(event) {
            event.preventDefault();
 
-           let roles = $("#roles").serializeArray();
-           let roles1 = [];
-           roles.forEach(el => el.value === "USER" ?
-               roles1.push({id: 2, role: "USER"}) :
-               roles1.push({id: 1, role: "ADMIN"}));
+           let serRoles = $("#roles").serializeArray();
+           let roles = [];
+           serRoles.forEach(el => el.value === "USER" ?
+               roles.push({id: 2, role: "USER"}) :
+               roles.push({id: 1, role: "ADMIN"}));
 
            createUser($("#firstname").val(),
                       $("#lastname").val(),
                       $("#age").val(),
                       $("#username").val(),
                       $("#pwd").val(),
-                      roles1);
+                      roles);
 
            $("#firstname").val("");
            $("#lastname").val("");
@@ -143,9 +115,60 @@
            showDeleteUserDialog(userId, modal);
        });
 
-
-
+        $.ajax({
+            url: "http://localhost:8080/api/v1/users/principal",
+            type: "GET",
+            dataType: "json",
+            async: false,
+            success: function (principal) {
+                if (principal.roles.every(el => el.role !== "ROLE_ADMIN")) {
+                    $("#admin").hide();
+                    $("#admin-nav").hide();
+                    $("#user-nav").addClass("active");
+                    $("#principal").addClass("active");
+                }
+            },
+            error: (err) => console.log("Get principal error: " + err)
+        });
     });
+
+    function showHeader() {
+        $.ajax({
+            url: "http://localhost:8080/api/v1/users/principal",
+            type: "GET",
+            dataType: "json",
+            success: function (principal) {
+                let navbar = $("#header");
+                navbar.append(`
+                    <span>${principal.username}</span> with roles:
+                    <span>${principal.roles.map(r => r.role.substring(5)).join(" ")}</span>
+                `);
+            },
+            error: (err) => console.log("Show header error: " + err)
+        });
+    }
+
+    function showUser() {
+        $.ajax({
+            url: "http://localhost:8080/api/v1/users/principal",
+            type: "GET",
+            dataType: "json",
+            success: function (principal) {
+                let user = $("#principal-body");
+                user.append(`
+                    <tr>
+                        <td><a>${principal.id}</a></td>
+                        <td><a>${principal.firstname}</a></td>
+                        <td><a>${principal.lastname}</a></td>
+                        <td><a>${principal.age}</a></td>
+                        <td><a>${principal.username}</a></td>
+                        <td><a>${principal.roles.map(r => r.role.substring(5)).join(" ")}</a></td>
+                    </tr>
+                `);
+            },
+            error: (err) => console.log("Show user error: " + err)
+        });
+    }
 
     function showUserTable() {
         $.ajax({
@@ -171,9 +194,7 @@
                     userList.append(row);
                 });
             },
-            error: function() {
-                console.log("Error occurred while retrieving users.");
-            }
+            error: (err) => console.log("Show user table error: " + err)
         });
     }
 
@@ -203,19 +224,19 @@
                 $("#new_user_tab").removeClass("active");
                 $("#users_tab").addClass("active");
             },
-            error: function(xhr, textStatus, errorThrown) {
-                console.log("Creating user error: " + errorThrown);
-            }
+            error: (err) => console.log("Create user error: " + err)
         });
     }
 
     $("#editUserButton").click(function () {
         let modal = $("#editUserModal");
-        let roles = modal.find("#roles").serializeArray();
-        let roles1 = [];
-        roles.forEach(el => el.value === "USER" ?
-            roles1.push({id: 2, role: "USER"}) :
-            roles1.push({id: 1, role: "ADMIN"}));
+        let serRoles = modal.find("#roles").serializeArray();
+        let roles = [];
+
+        serRoles.forEach(el => el.value === "USER" ?
+            roles.push({id: 2, role: "USER"}) :
+            roles.push({id: 1, role: "ADMIN"}));
+
         let user = {
             id: modal.find("#userId").val(),
             firstname: modal.find("#firstName").val(),
@@ -223,9 +244,8 @@
             age: modal.find("#userAge").val(),
             username: modal.find("#userName").val(),
             password: modal.find("#userPassword").val(),
-            roles: roles1
+            roles: roles
         }
-        console.log(user);
 
         $.ajax({
             url: "http://localhost:8080/api/v1/users/",
@@ -234,11 +254,9 @@
             data: JSON.stringify(user),
             success: function() {
                 showUserTable();
-                location.reload();
+                $("#editUserModal .modal-footer .btn-secondary").click();
             },
-            error: function(xhr, textStatus, errorThrown) {
-                console.log("Creating user error: " + errorThrown);
-            }
+            error: (err) => console.log("Edit user error: " + err)
         });
     });
 
@@ -248,11 +266,9 @@
             type: "DELETE",
             success: function() {
                 showUserTable();
-                location.reload();
+                $("#deleteUserModal .modal-footer .btn-secondary").click();
             },
-            error: function(xhr, textStatus, errorThrown) {
-                console.log("Delete user error: " + errorThrown);
-            }
+            error: (err) => console.log("Delete user error: " + err)
         });
     });
 
@@ -268,7 +284,6 @@
                 modal.find("#userAge").val(data.age);
                 modal.find("#userName").val(data.username);
                 modal.find("#userPassword").val(data.password);
-
             },
             error: (err) => console.log(err)
         });

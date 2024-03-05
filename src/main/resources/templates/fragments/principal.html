@@ -13,8 +13,7 @@
 </head>
 <body>
 
-<div th:fragment="this_user">
-
+<div th:fragment="principal">
         <div class="mx-5">
             <h1 class="my-3">User information-page</h1>
             <div class="border">
@@ -31,15 +30,7 @@
                             <th scope="col">Role</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td><a th:text="${this_user.getId()}"></a></td>
-                            <td><a th:text="${this_user.getFirstname()}"></a></td>
-                            <td><a th:text="${this_user.getLastname()}"></a></td>
-                            <td><a th:text="${this_user.getAge()}"></a></td>
-                            <td><a th:text="${this_user.getUsername()}"></a></td>
-                            <td><a th:text="${#strings.listJoin(this_user.getRoles(), ' ')}"></a></td>
-                        </tbody>
+                        <tbody id="principal-body"></tbody>
                     </table>
                 </div>
             </div>

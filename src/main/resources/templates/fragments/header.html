@@ -16,9 +16,7 @@
 <div th:fragment="header">
     <nav class="navbar bg-dark">
         <div class="container-fluid">
-            <div class="navbar-brand text-light mb-2 h2">
-                <span th:text="${this_user.getUsername()}">id</span> with roles:
-                <span th:text="${#strings.listJoin(this_user.getRoles(), ' ')}"></span>
+            <div class="navbar-brand text-light mb-2 h2" id="header">
             </div>
             <a class="nav-link d-flex text-white-50 mr-3" href="/logout">Logout</a>
         </div>
