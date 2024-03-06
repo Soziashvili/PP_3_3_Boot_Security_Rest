@@ -28,7 +28,7 @@ public class UserRestController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<User>> getUsers() {
         return new ResponseEntity<>(userService.listUsers(), HttpStatus.OK);
     }
@@ -43,7 +43,7 @@ public class UserRestController {
         return new ResponseEntity<>(userService.findUserById(id), HttpStatus.OK);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<User> create(@RequestBody User user) {
         return new ResponseEntity<>(userService.create(user), HttpStatus.CREATED);
     }
