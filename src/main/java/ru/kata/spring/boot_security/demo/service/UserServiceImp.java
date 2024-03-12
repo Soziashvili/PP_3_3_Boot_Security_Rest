@@ -22,10 +22,9 @@ public class UserServiceImp implements UserService{
     }
 
     @Transactional
-    public User save(User user) {
+    public void save(User user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);
-        return user;
     }
 
     @Transactional(readOnly = true)
@@ -48,12 +47,8 @@ public class UserServiceImp implements UserService{
     }
 
     @Transactional
-    public void updateUser(Long id, User user) {
-        Optional<User> opt = userRepository.findById(id);
-
-        if (opt.isPresent()) {
-            userRepository.save(user);
-        }
+    public void updateUser(User user) {
+        userRepository.save(user);
     }
 
     @Transactional

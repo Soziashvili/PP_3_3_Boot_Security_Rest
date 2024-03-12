@@ -66,14 +66,12 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("roles", roleService.listRoles());
 
-        System.out.println("user edit " + user);
-
         return "admin/update";
     }
 
     @PostMapping("admin/update/")
     public String editUser(@ModelAttribute("new_user") User user) {
-        userService.save(user);
+        userService.updateUser(user);
         return "redirect:/admin";
     }
 
