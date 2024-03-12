@@ -50,7 +50,7 @@ public class UserRestController {
 
     @PutMapping
     public ResponseEntity<User> update(@RequestBody User user) {
-        return new ResponseEntity<>(userService.create(user), HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

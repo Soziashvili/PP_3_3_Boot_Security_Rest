@@ -48,12 +48,9 @@ public class UserServiceImp implements UserService{
     }
 
     @Transactional
-    public void updateUser(Long id, User user) {
-        Optional<User> opt = userRepository.findById(id);
-
-        if (opt.isPresent()) {
-            userRepository.save(user);
-        }
+    public User updateUser(User user) {
+        userRepository.save(user);
+        return user;
     }
 
     @Transactional

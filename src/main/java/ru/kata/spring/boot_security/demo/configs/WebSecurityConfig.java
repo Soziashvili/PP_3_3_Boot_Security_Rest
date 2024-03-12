@@ -36,8 +36,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/", "/index").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
                 .cors()
@@ -49,8 +47,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .permitAll();
     }
-
-
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
